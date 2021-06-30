@@ -1,6 +1,6 @@
 let express = require('express');
 let app = express();
-let store = "";
+
 
 app.use((req, res, next) => {
     let time = new Date();
@@ -8,26 +8,34 @@ app.use((req, res, next) => {
     next();
 })
 
-app.use((req, res, next) => {
+app.use('/form', (req, res, next) => {
+    let store = "";
+    console.log(req.headers['content-type']);
     req.on('data', (chunk) => {
         store += chunk;
     })
     req.on('end', () => {
         if(store) {
             req.body = JSON.parse(store);
-            res.end();
-            
-        } else {
-            next();
-        } 
+            res.send(req.body);
+        }
     })
+    
 })
+
 
 app.use((req, res, next) => {
     let rootPath = __dirname + '/public';
-    res.sendFile(rootPath + req.url);
+    if(req.url !== '/') {
+        res.sendFile(rootPath + req.url);
+    } else {
+        next();
+    } 
 })
 
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/index.html');
+})
 
 app.listen(5000, () => {
     console.log('server is listening on port 5k');
