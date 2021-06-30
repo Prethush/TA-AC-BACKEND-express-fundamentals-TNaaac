@@ -1,0 +1,13 @@
+h1 {
+    text-align: center;
+    color: red;
+    font-size: 3rem;
+}
+
+img {
+    width: 400px;
+    height: 400px;
+    display: block;
+    margin: 0 auto;
+    border-radius: .4rem;
+}
