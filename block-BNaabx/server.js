@@ -8,34 +8,30 @@ app.use((req, res, next) => {
     next();
 })
 
-app.use('/form', (req, res, next) => {
+app.use((req, res, next) => {
     let store = "";
-    console.log(req.headers['content-type']);
     req.on('data', (chunk) => {
         store += chunk;
     })
     req.on('end', () => {
-        if(store) {
+        if(store && req.headers['content-type'] === 'application/json') {
             req.body = JSON.parse(store);
-            res.send(req.body);
+            console.log(req.body);
         }
     })
     
+    next();
 })
 
 
 app.use((req, res, next) => {
     let rootPath = __dirname + '/public';
     if(req.url !== '/') {
-        res.sendFile(rootPath + req.url);
-    } else {
-        next();
-    } 
+        res.sendFile(rootPath + req.url); 
+    }
+    
 })
 
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html');
-})
 
 app.listen(5000, () => {
     console.log('server is listening on port 5k');
